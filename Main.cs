@@ -2,6 +2,11 @@ using System;
 
 class Program {
     static void Main () {
-        Console.WriteLine("Password Manager.");
+        string[] keys;
+        keys = Encryption.KeyGen();
+        
+        Console.WriteLine(keys[0]);
+        Console.Write("\n\n");
+        Console.WriteLine(keys[1]);
     }
 }
