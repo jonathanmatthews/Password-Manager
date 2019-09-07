@@ -1,26 +1,23 @@
 using System;
 using PasswordManager;
-using System.Text;
+using System.Text; // Remove after testing.
 
 class Program {
     static void Main () {
-        string[] keys;
-        keys = Encryption.KeyGen(); // {pub, priv}
         
-        string testWord = "cactus";
+        string testword = "cactus";
+        string password = "beep2001";
         
-        byte[] encrypted = Encryption.Encrypt(keys[0], testWord);
-        string decrypted = Encryption.Decrypt(keys[1], encrypted);
+        byte[] encrypted = AES.Encrypt(password, testword);
+        string decrypted = AES.Decrypt(password, encrypted);
         
-        
-        /*
-        Console.WriteLine(keys[0]);
-        Console.Write("\n\n");
-        Console.WriteLine(keys[1]);
-        */
-        
-        Console.WriteLine("unencrypted: {0}", testWord);
-        Console.WriteLine("encrypted: {0}", ASCIIEncoding.ASCII.GetString(encrypted));
+        Console.WriteLine("testword: {0}", testword);
+        //Console.WriteLine("encrypted: {0}", encrypted);
         Console.WriteLine("decrypted: {0}", decrypted);
+        
     }
 }
+
+// TODO: Look into converting ASCII to UNICODE.
+// TODO: Look into RSA padding options.
+// TODO: Look into RSA key container.

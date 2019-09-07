@@ -1,10 +1,10 @@
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using System.IO;
 
 namespace PasswordManager {
-    static class Encryption {
-        
+    static class RSA {
         public static string[] KeyGen () {
             // Generate a pair of RSA keys in XML format.
             string priv;
@@ -16,10 +16,10 @@ namespace PasswordManager {
             using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider()) {
                 priv = rsa.ToXmlString(true);
                 pub = rsa.ToXmlString(false);
-            } // Using RSA
+            } // Using rsa
             
             return new string[] {pub, priv};
-        } // KeyGen
+        } // RSA.KeyGen
         
         public static byte[] Encrypt(string pubKey, string data) {
             // Encrypt a string in XML format using XML format pubKey.
@@ -32,7 +32,7 @@ namespace PasswordManager {
             }
             
             return encryptedDataBytes;
-        } // Encrypt
+        } // RSA.Encrypt
         
         public static string Decrypt (string privKey, byte[] encryptedDataBytes) {
             // Decrypt byte array of encrypted string using XML format privKey.
@@ -45,7 +45,94 @@ namespace PasswordManager {
             }
             
             return data;
-        } // Decrypt
+        } // RSA.Decrypt
+    } // RSA
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    static class AES {
         
-    } // Encryption
+        public static byte[] Encrypt (string key, string data) {
+            //
+            byte[] encryptedDataBytes;
+            
+            using (AesCryptoServiceProvider aes = new AesCryptoServiceProvider()) {
+                
+                MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
+                byte[] keyBytes = ASCIIEncoding.ASCII.GetBytes(key);
+                byte[] keyBytesHashed = md5.ComputeHash(keyBytes); // Obtain 128-bit key from any length password.
+                aes.Key = keyBytesHashed;
+                
+                ICryptoTransform encryptor = aes.CreateEncryptor();
+                
+                using (MemoryStream memStr = new MemoryStream()) { // This looks ridiculous.
+                    using (CryptoStream cryptStr = new CryptoStream(memStr, encryptor, CryptoStreamMode.Write)) {
+                        using (StreamWriter cryptStrWriter = new StreamWriter(cryptStr)) {
+                            cryptStrWriter.Write(data); // Encrypt data by writing to crypto stream, store in memory stream.
+                            encryptedDataBytes = memStr.ToArray(); // Create byte array from memory stream.
+                        }
+                    }
+                }
+            }
+            return encryptedDataBytes;
+        } // AES.Encrypt
+        
+        
+        
+        
+        public static string Decrypt (string key, byte[] encryptedDataBytes) {
+            //
+            string data;
+            
+            using (AesCryptoServiceProvider aes = new AesCryptoServiceProvider()) {
+                
+                MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
+                byte[] keyBytes = ASCIIEncoding.ASCII.GetBytes(key);
+                byte[] keyBytesHashed = md5.ComputeHash(keyBytes); // Obtain 128-bit key from any length password.
+                aes.Key = keyBytesHashed;
+                
+                ICryptoTransform decryptor = aes.CreateDecryptor();
+                
+                using (MemoryStream memStr = new MemoryStream(encryptedDataBytes)) {
+                    using (CryptoStream cryptStr = new CryptoStream(memStr, decryptor, CryptoStreamMode.Read)) {
+                        using (StreamReader cryptStrReader = new StreamReader(cryptStr)) {
+                            data = cryptStrReader.ReadToEnd(); // Extract data from memory stream, deciphered through crypto stream.
+                        }
+                    }
+                }
+            }
+            return data;
+        } // AES.Decrypt
+        
+    } // AES
+    
 } // PasswordManager
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
