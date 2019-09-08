@@ -70,6 +70,9 @@ namespace PasswordManager {
                 byte[] keyBytesHashed = md5.ComputeHash(keyBytes); // Obtain 128-bit key from any length password.
                 aes.Key = keyBytesHashed;
                 
+                // Hashing is correct, I think.
+                // Problem exists after this point, returned byte array is of length 0.
+                
                 ICryptoTransform encryptor = aes.CreateEncryptor();
                 
                 using (MemoryStream memStr = new MemoryStream()) { // This looks ridiculous.
