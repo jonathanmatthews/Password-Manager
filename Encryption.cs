@@ -5,6 +5,8 @@ using System.IO;
 
 namespace PasswordManager {
     static class RSA {
+        // Class to act as a simple interface to RSA encryption/decryption and key generation.
+        
         public static string[] KeyGen () {
             // Generate a pair of RSA keys in XML format.
             string priv;
@@ -58,9 +60,12 @@ namespace PasswordManager {
     
     
     static class AES {
+        // Class to act as a simple interface to AES encryption/decryption.
+        // Currently not functional. See AES.Encrypt().
         
         public static byte[] Encrypt (string key, string data) {
-            //
+            // Encrypt an ASCII string with AES.
+            
             byte[] encryptedDataBytes;
             
             using (AesCryptoServiceProvider aes = new AesCryptoServiceProvider()) {
@@ -91,7 +96,7 @@ namespace PasswordManager {
         
         
         public static string Decrypt (string key, byte[] encryptedDataBytes) {
-            //
+            // Decrypt an ASCII string with AES.
             string data;
             
             using (AesCryptoServiceProvider aes = new AesCryptoServiceProvider()) {

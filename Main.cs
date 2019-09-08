@@ -4,7 +4,7 @@ using System.Text; // Remove after testing.
 
 class Program {
     static void Main () {
-        
+        /*
         string testword = "cactus";
         string password = "beep2001";
         
@@ -14,6 +14,11 @@ class Program {
         
         Console.WriteLine("encrypt successful");
         Console.WriteLine("cipher text length {0}", encrypted.Length);
+        */
+        
+        Data data = new Data("password");
+        Console.WriteLine("Yay, no compile errors!");
+        
         
         //string decrypted = AES.Decrypt(password, encrypted);
         
