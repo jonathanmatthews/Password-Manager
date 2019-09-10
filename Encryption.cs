@@ -5,6 +5,8 @@ using System.IO;
 
 namespace PasswordManager {
     static class RSA {
+        // Class to act as a simple interface to RSA encryption/decryption and key generation.
+        
         public static string[] KeyGen () {
             // Generate a pair of RSA keys in XML format.
             string priv;
@@ -48,22 +50,16 @@ namespace PasswordManager {
         } // RSA.Decrypt
     } // RSA
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
     static class AES {
+        // Class to act as a simple interface to AES encryption/decryption.
+        // Currently not functional. See AES.Encrypt().
+        
         private static readonly Random rand = new Random(); // Not cryptographically secure.
         private const string alphabet = "abcdefghijklmnopqrstuvwxyz";
         private const int prefixLength = 100;
         
         public static byte[][] Encrypt (string key, string data) {
-            //
+            // Encrypt an ASCII string with AES.
             byte[] encryptedDataBytes;
             byte[] IV;
             
@@ -79,9 +75,6 @@ namespace PasswordManager {
                 aes.Key = keyBytesHashed;
                 IV = aes.IV;
                 
-                // Hashing is correct, I think.
-                // Problem exists after this point
-                
                 ICryptoTransform encryptor = aes.CreateEncryptor();
                 
                 using (MemoryStream memStr = new MemoryStream()) { // This looks ridiculous.
@@ -96,13 +89,8 @@ namespace PasswordManager {
             return new byte[][] {encryptedDataBytes, IV};
         } // AES.Encrypt
         
-        
-        
-        
         public static string Decrypt (string key, byte[] encryptedDataBytes, byte[] IV) {
-            //
-            
-            
+            // Decrypt an ASCII string with AES.
             string data;
             
             using (AesCryptoServiceProvider aes = new AesCryptoServiceProvider()) {
@@ -113,9 +101,7 @@ namespace PasswordManager {
                 aes.Key = keyBytesHashed;
                 aes.IV = IV;
                 
-                
                 ICryptoTransform decryptor = aes.CreateDecryptor();
-                
                 
                 using (MemoryStream memStr = new MemoryStream(encryptedDataBytes)) {
                     using (CryptoStream cryptStr = new CryptoStream(memStr, decryptor, CryptoStreamMode.Read)) {
@@ -125,11 +111,10 @@ namespace PasswordManager {
                     }
                 }
             }
+            
             return data.Substring(AES.prefixLength); // Remove prefix, start substring at index where prefix ends.
         } // AES.Decrypt
-        
     } // AES
-    
 } // PasswordManager
 
 
