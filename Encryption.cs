@@ -50,23 +50,23 @@ namespace PasswordManager {
         } // RSA.Decrypt
     } // RSA
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
     static class AES {
         // Class to act as a simple interface to AES encryption/decryption.
         // Currently not functional. See AES.Encrypt().
         
-        public static byte[] Encrypt (string key, string data) {
+        private static readonly Random rand = new Random(); // Not cryptographically secure.
+        private const string alphabet = "abcdefghijklmnopqrstuvwxyz";
+        private const int prefixLength = 100;
+        
+        public static byte[][] Encrypt (string key, string data) {
             // Encrypt an ASCII string with AES.
             
             byte[] encryptedDataBytes;
+            byte[] IV;
+            
+            string prefix = ""; // Something random to prepend to data to ensure it is of the minimum size.
+            for (int i = 0; i < AES.prefixLength; i++)
+                prefix += alphabet[AES.rand.Next(AES.alphabet.Length)];
             
             using (AesCryptoServiceProvider aes = new AesCryptoServiceProvider()) {
                 
@@ -74,28 +74,23 @@ namespace PasswordManager {
                 byte[] keyBytes = ASCIIEncoding.ASCII.GetBytes(key);
                 byte[] keyBytesHashed = md5.ComputeHash(keyBytes); // Obtain 128-bit key from any length password.
                 aes.Key = keyBytesHashed;
-                
-                // Hashing is correct, I think.
-                // Problem exists after this point, returned byte array is of length 0.
+                IV = aes.IV;
                 
                 ICryptoTransform encryptor = aes.CreateEncryptor();
                 
                 using (MemoryStream memStr = new MemoryStream()) { // This looks ridiculous.
                     using (CryptoStream cryptStr = new CryptoStream(memStr, encryptor, CryptoStreamMode.Write)) {
                         using (StreamWriter cryptStrWriter = new StreamWriter(cryptStr)) {
-                            cryptStrWriter.Write(data); // Encrypt data by writing to crypto stream, store in memory stream.
-                            encryptedDataBytes = memStr.ToArray(); // Create byte array from memory stream.
+                            cryptStrWriter.Write(prefix + data); // Encrypt prefixed data by writing to crypto stream.
                         }
                     }
+                    encryptedDataBytes = memStr.ToArray(); // Create byte array from memory stream.
                 }
             }
-            return encryptedDataBytes;
+            return new byte[][] {encryptedDataBytes, IV};
         } // AES.Encrypt
         
-        
-        
-        
-        public static string Decrypt (string key, byte[] encryptedDataBytes) {
+        public static string Decrypt (string key, byte[] encryptedDataBytes, byte[] IV) {
             // Decrypt an ASCII string with AES.
             string data;
             
@@ -105,6 +100,7 @@ namespace PasswordManager {
                 byte[] keyBytes = ASCIIEncoding.ASCII.GetBytes(key);
                 byte[] keyBytesHashed = md5.ComputeHash(keyBytes); // Obtain 128-bit key from any length password.
                 aes.Key = keyBytesHashed;
+                aes.IV = IV;
                 
                 ICryptoTransform decryptor = aes.CreateDecryptor();
                 
@@ -116,11 +112,10 @@ namespace PasswordManager {
                     }
                 }
             }
-            return data;
+            
+            return data.Substring(AES.prefixLength); // Remove prefix, start substring at index where prefix ends.
         } // AES.Decrypt
-        
     } // AES
-    
 } // PasswordManager
 
 
