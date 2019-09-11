@@ -103,7 +103,7 @@ namespace PasswordManager {
             string passwd = Console.ReadLine();
             this.data = new Data(passwd);
             this.passSet = true;
-            this.changesMade = false;
+            this.changesMade = true;
         } // NewData
         
         private void ListEntries () {
@@ -126,6 +126,7 @@ namespace PasswordManager {
             string name = Console.ReadLine();
             Console.WriteLine("Enter the password your wish to store for this service: ");
             string passwd = Console.ReadLine();
+            this.changesMade = true;
             
             this.data[name] = passwd;
         } // AddEntry
@@ -135,6 +136,7 @@ namespace PasswordManager {
             Console.WriteLine("Enter the path (including filename) to which you wish to save the current database: ");
             string path = Console.ReadLine();
             this.data.Save(path);
+            this.changesMade = false;
         }
         
         private void Exit () {
