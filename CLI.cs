@@ -1,26 +1,69 @@
 using System;
+using System.Collections.Generic;
 
 namespace PasswordManager {
     class CLI {
         //
         private Data data = null;
-        private bool changesMade = false;
-        private bool passSet = null;
+        private bool changesMade;
+        private bool passSet;
+        private List<string> options;
+        private List<Action> funcs;
         
         
         public void Run () {
             //
             
             
-            
-            
         } // Run
+        
+        
+        private void GetActions () {
+            //
+            this.options = new List<string>();
+            this.funcs = new List<Action>();
+            
+            // Always available:
+            this.options.Add("Exit (Lose any unsaved changes)");
+            this.options.Add("Create new database (Lose any unsaved changes)");
+            this.options.Add("Load old database (Lose any unsaved changes)");
+            
+            this.funcs.Add(this.Exit);
+            this.funcs.Add(this.NewData);
+            this.funcs.Add(this.LoadData);
+            
+            if (data != null) {
+                // Something is loaded, more options available.
+                this.options.Add("List services for which passwords are currently stored");
+                this.options.Add("Add an entry to the current database");
+                
+                this.funcs.Add(this.ListEntries);
+                this.funcs.Add(this.AddEntry);
+                
+                if (!this.passSet) {
+                    this.options.Add("Enter master password (enable recalling)");
+                    this.funcs.Add(this.AddMaster);
+                } else {
+                    this.options.Add("Recall a password");
+                    this.funcs.Add(this.Show);
+                }
+                
+                if (this.changesMade) {
+                    this.options.Add("Save changes to file (overwrite without warning)");
+                    this.funcs.Add(this.SaveData);
+                }
+            }
+        } // GetActions
         
         
         
     
         static private void DisplayOptions () {
             //
+            
+            
+            
+            
             
         } // DisplayOptions
     
@@ -32,6 +75,7 @@ namespace PasswordManager {
             string path = Console.ReadLine();
             this.data = Data.Load(path);
             this.passSet = false;
+            this.changesMade = false;
         } // LoadData
         
         private void NewData () {
@@ -40,6 +84,7 @@ namespace PasswordManager {
             string passwd = Console.RealLine();
             this.data = new Data(passwd);
             this.passSet = true;
+            this.changesMade = false;
         } // NewData
         
         private void ListEntries () {
