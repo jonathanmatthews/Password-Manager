@@ -7,7 +7,7 @@ has been given.
 This probably isn't a particularly useful feature on its own, for most people, but it sounded
 like an interesting thing to implement, so I thought I'd give it a go.
 
-#Compiling
+# Compiling
 I've tested it with Mono on Pop-OS, and so to compile it on a platform similar to mine
 using Mono, use something similar to: 
 `$ mcs Main.cs Data.cs Encryption.cs -out:passman.exe`
