@@ -14,7 +14,7 @@ namespace PasswordManager {
         public void Run () {
             //
             while (true) {
-                this.GetOptions();
+                this.GetActions();
                 this.DisplayOptions();
             }
             
@@ -61,18 +61,22 @@ namespace PasswordManager {
         
         
     
-        static private void DisplayOptions () {
+        private void DisplayOptions () {
             //
-            Console.WriteLine("Enter the number option you wish to choose: ")
+            Console.WriteLine("\n\nEnter the number option you wish to choose: ");
             
-            for (int i = 0; i < this.options.Length; i++)
+            for (int i = 0; i < this.options.Count; i++)
                 Console.WriteLine("{0}. {1}", i, this.options[i]);
             
+            Console.WriteLine("\n");
             string answer = Console.ReadLine().Trim();
             
             try {
-                this.funcs[(int)answer]();
-            } catch (InvalidCastException, IndexOutofRange) {
+                this.funcs[Convert.ToInt32(answer)]();
+            } catch (FormatException) { // Bad cast.
+                Console.WriteLine("Oops! That wasn't a valid input. Enter only the number, nothing else.");
+                this.DisplayOptions();
+            } catch (ArgumentOutOfRangeException) {
                 Console.WriteLine("Oops! That wasn't a valid input. Enter only the number, nothing else.");
                 this.DisplayOptions();
             }
@@ -96,7 +100,7 @@ namespace PasswordManager {
         private void NewData () {
             //
             Console.WriteLine("Enter the password you wish to set for this new database: ");
-            string passwd = Console.RealLine();
+            string passwd = Console.ReadLine();
             this.data = new Data(passwd);
             this.passSet = true;
             this.changesMade = false;
@@ -120,13 +124,13 @@ namespace PasswordManager {
             //
             Console.WriteLine("Enter the name of the service for which this password is for: ");
             string name = Console.ReadLine();
-            Console.WriteLine(("Enter the password your wish to store for this service: ");
+            Console.WriteLine("Enter the password your wish to store for this service: ");
             string passwd = Console.ReadLine();
             
             this.data[name] = passwd;
         } // AddEntry
         
-        private void SavaData () {
+        private void SaveData () {
             //
             Console.WriteLine("Enter the path (including filename) to which you wish to save the current database: ");
             string path = Console.ReadLine();
@@ -138,7 +142,7 @@ namespace PasswordManager {
             Environment.Exit(0);
         }
         
-        private Show () {
+        private void Show () {
             //
             Console.WriteLine("Enter the name of the service for which you wish to view the password: ");
             string name = Console.ReadLine();
