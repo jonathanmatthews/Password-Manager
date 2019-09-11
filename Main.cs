@@ -4,22 +4,37 @@ using System.Text; // Remove after testing.
 
 class Program {
     static void Main () {
-
         
-        string testword = "cat";
-        string password = "beep2001";
+        string password = "potato";
         
-        byte[][] result = AES.Encrypt(password, testword);
-        byte[] encrypted = result[0];
-        byte[] IV = result[1];
+        Data passman = new Data(password);
         
-        Console.WriteLine("cipher text length {0}", encrypted.Length);
+        passman["website"] = "bobbly";
         
-        string decrypted = AES.Decrypt(password, encrypted, IV);
+        Console.WriteLine("password is: {0}", passman["website"]);
         
-        Console.WriteLine("testword: {0}", testword);
-        //Console.WriteLine("encrypted: {0}", ASCIIEncoding.ASCII.GetString(encrypted));
-        Console.WriteLine("decrypted: {0}", decrypted);
+        passman["website"] = "bubbly";
+        
+        Console.WriteLine("new password is: {0}", passman["website"]);
+        
+        
+        
+        
+        
+//         string testword = "cat";
+//         string password = "boop123";
+//         
+//         byte[][] result = AES.Encrypt(password, testword);
+//         byte[] encrypted = result[0];
+//         byte[] IV = result[1];
+//         
+//         Console.WriteLine("cipher text length {0}", encrypted.Length);
+//         
+//         string decrypted = AES.Decrypt(password, encrypted, IV);
+//         
+//         Console.WriteLine("testword: {0}", testword);
+//         Console.WriteLine("encrypted: {0}", ASCIIEncoding.ASCII.GetString(encrypted));
+//         Console.WriteLine("decrypted: {0}", decrypted);
         
     }
 }
