@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 
 namespace PasswordManager {
@@ -36,6 +37,17 @@ namespace PasswordManager {
             this.userPassword = userPassword;
             this.passwords = new Dictionary<string, byte[]>();
         } // Data (constructor)
+        
+        private Data (string pub, byte[] priv, byte[] privIV, byte[] testEncrypted, byte[] testEncryptedIV) {
+            // Overloaded constructor intended for use with Data.Load(), in order to load
+            // a database without knowing the AES key.
+            this.pub = pub;
+            this.priv = priv;
+            this.privIV = privIV;
+            this.testEncrypted = testEncrypted;
+            this.testEncryptedIV = testEncryptedIV;
+            this.passwords = new Dictionary<string, byte[]>();
+        } // Data (second constructor)
         
         public string this[string index] {
             // Define the indexing operator, to access and create/change passwords
@@ -76,18 +88,89 @@ namespace PasswordManager {
             }
         } // SetPassword
         
-        // TODO: save/load functions, after correcting AES encryption fault.
-        // Can potentially be done with serialisation.
+        public List<string> GetKeys () {
+            // Function to return a list of keys for the password database.
+            return new List<string>(this.passwords.Keys);
+        }
         
-        public void Save () {
-            // DoStuff()
+        public void Save (string filepath) {
+            /* Create a large string containing all data in the object, with each entry separated
+               by a new line, then store that string in a text file to later be read back.
+               Will overwrite filepath without warning. Filepath must be relative to current
+               working directory, and is the location to save the data to.*/
+            List<string> lines = new List<string>();
+            
+            // Add known fields:
+            lines.Add(this.pub);
+            lines.Add(BitConverter.ToString(this.priv));
+            lines.Add(BitConverter.ToString(this.privIV));
+            lines.Add(BitConverter.ToString(this.testEncrypted));
+            lines.Add(BitConverter.ToString(this.testEncryptedIV));
+            
+            // Add password dictionary:
+            foreach (string key in this.passwords.Keys) {
+                lines.Add(key);
+                lines.Add(BitConverter.ToString(this.passwords[key]));
+            }
+            
+            // Join strings.
+            string result = "";
+            foreach (string line in lines)
+                result += (line + "\n");
+            
+            // Store data.
+            File.WriteAllText(filepath, result);
         } // Save
         
-        public void Load () {
-            // Change return type to Data, after completing function.
-            // DoStuff()
+        
+        private static byte[] HexToByte (string hex) {
+            // A function to convert a hexadecimal string into a byte array, such as that
+            // produced by Data.Save().
+            string[] splitted = hex.Split( new char[] {'-'} );
+            List<byte> bytes = new List<byte>();
+            
+            foreach (string b in splitted)
+                bytes.Add(Convert.ToByte(b, 16));
+            
+            return bytes.ToArray();
+        }
+        
+        
+        public static Data Load (string filepath) {
+            // Load a text file created by Data.Save and return the reproduced object to which
+            // that data pertains.
+            
+            string fromFile = File.ReadAllText(filepath);
+            string[] lines = fromFile.Split( new char[] {'\n'} );
+            
+            Data reconstructed = new Data(
+                lines[0], // pub
+                Data.HexToByte(lines[1]), // priv
+                Data.HexToByte(lines[2]), // privIV
+                Data.HexToByte(lines[3]), // testEncrypted
+                Data.HexToByte(lines[4])  // testEncryptedIV
+            );
+            
+            for (int i = 5; i < lines.Length - 1; i += 2) // -1 to ignore blank line at end.
+                reconstructed.passwords.Add(lines[i], Data.HexToByte(lines[i+1])); // Lines alternate between key and value.
+                
+                //reconstructed[lines[i]] = Data.HexToByte(lines[i+1]);
+            
+            return reconstructed;
         } // Load
         
         
     } // Data
 } // PasswordManager
+
+
+
+
+
+
+
+
+
+
+
+
