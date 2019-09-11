@@ -1,6 +1,6 @@
 # Password-Manager
 A password manager that encrypts passwords using RSA, and then encrypts the RSA private key
-with AES, with a user defined master password.This is such that passwords can be saved
+with AES, with a user defined master password. This is such that passwords can be saved
 without entering the master password, but can only be recalled after the master password
 has been given.
 
@@ -13,4 +13,4 @@ using Mono, use something similar to:
 `$ mcs Main.cs Data.cs Encryption.cs -out:passman.exe`
 
 To run, simply use:
-`& mono passman.exe`
+`$ mono passman.exe`
