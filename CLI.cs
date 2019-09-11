@@ -13,7 +13,10 @@ namespace PasswordManager {
         
         public void Run () {
             //
-            
+            while (true) {
+                this.GetOptions();
+                this.DisplayOptions();
+            }
             
         } // Run
         
@@ -60,7 +63,19 @@ namespace PasswordManager {
     
         static private void DisplayOptions () {
             //
+            Console.WriteLine("Enter the number option you wish to choose: ")
             
+            for (int i = 0; i < this.options.Length; i++)
+                Console.WriteLine("{0}. {1}", i, this.options[i]);
+            
+            string answer = Console.ReadLine().Trim();
+            
+            try {
+                this.funcs[(int)answer]();
+            } catch (InvalidCastException, IndexOutofRange) {
+                Console.WriteLine("Oops! That wasn't a valid input. Enter only the number, nothing else.");
+                this.DisplayOptions();
+            }
             
             
             
