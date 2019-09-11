@@ -91,7 +91,7 @@ namespace PasswordManager {
         public List<string> GetKeys () {
             // Function to return a list of keys for the password database.
             return new List<string>(this.passwords.Keys);
-        }
+        } // GetKeys
         
         public void Save (string filepath) {
             /* Create a large string containing all data in the object, with each entry separated
@@ -122,7 +122,6 @@ namespace PasswordManager {
             File.WriteAllText(filepath, result);
         } // Save
         
-        
         private static byte[] HexToByte (string hex) {
             // A function to convert a hexadecimal string into a byte array, such as that
             // produced by Data.Save().
@@ -133,8 +132,7 @@ namespace PasswordManager {
                 bytes.Add(Convert.ToByte(b, 16));
             
             return bytes.ToArray();
-        }
-        
+        } // HexToBytes
         
         public static Data Load (string filepath) {
             // Load a text file created by Data.Save and return the reproduced object to which
@@ -158,19 +156,5 @@ namespace PasswordManager {
             
             return reconstructed;
         } // Load
-        
-        
     } // Data
 } // PasswordManager
-
-
-
-
-
-
-
-
-
-
-
-
