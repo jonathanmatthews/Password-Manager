@@ -60,6 +60,7 @@ namespace PasswordManager {
         
         public static byte[][] Encrypt (string key, string data) {
             // Encrypt an ASCII string with AES.
+            
             byte[] encryptedDataBytes;
             byte[] IV;
             
@@ -116,25 +117,3 @@ namespace PasswordManager {
         } // AES.Decrypt
     } // AES
 } // PasswordManager
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

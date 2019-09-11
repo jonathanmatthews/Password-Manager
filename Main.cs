@@ -1,28 +1,37 @@
 using System;
 using PasswordManager;
-using System.Text; // Remove after testing.
 
 class Program {
     static void Main () {
         
-        string testword = "cat";
-        string password = "beep2001";
+        string password = "SuperSecurePassword";
+        string path = "/home/jon/Desktop/Test.passwd";
         
-        byte[][] result = AES.Encrypt(password, testword);
-        byte[] encrypted = result[0];
-        byte[] IV = result[1];
+        Data passman = new Data(password);
         
-        Console.WriteLine("cipher text length {0}", encrypted.Length);
+        Console.WriteLine("created");
         
-        string decrypted = AES.Decrypt(password, encrypted, IV);
+        passman["website1"] = "bobbly";
+        passman["website2"] = "bubbly";
         
-        Console.WriteLine("testword: {0}", testword);
-        //Console.WriteLine("encrypted: {0}", ASCIIEncoding.ASCII.GetString(encrypted));
-        Console.WriteLine("decrypted: {0}", decrypted);
+        Console.WriteLine("stored");
+        
+        passman.Save("/home/jon/Desktop/Test.passwd");
+        
+        Console.WriteLine("saved");
+        
+        Data reassembled = Data.Load(path);
+        
+        Console.WriteLine("reassembled");
+        
+        reassembled.SetPassword(password);
+        
+        foreach (string key in reassembled.GetKeys())
+            Console.WriteLine(reassembled[key]);
         
     }
 }
 
 // TODO: Look into converting ASCII to UNICODE.
 // TODO: Look into RSA padding options.
-// TODO: Look into RSA key container.
+// TODO: Look into RSA/AES key container.
