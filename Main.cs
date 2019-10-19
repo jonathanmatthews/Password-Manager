@@ -3,37 +3,8 @@ using PasswordManager;
 
 class Program {
     static void Main () {
-        
         var cli = new CLI();
         cli.Run();
-        
-        
-        
-//         string password = "SuperSecurePassword";
-//         string path = "/home/jon/Desktop/Test.passwd";
-//         
-//         Data passman = new Data(password);
-//         
-//         Console.WriteLine("created");
-//         
-//         passman["website1"] = "bobbly";
-//         passman["website2"] = "bubbly";
-//         
-//         Console.WriteLine("stored");
-//         
-//         passman.Save("/home/jon/Desktop/Test.passwd");
-//         
-//         Console.WriteLine("saved");
-//         
-//         Data reassembled = Data.Load(path);
-//         
-//         Console.WriteLine("reassembled");
-//         
-//         reassembled.SetPassword(password);
-//         
-//         foreach (string key in reassembled.GetKeys())
-//             Console.WriteLine(reassembled[key]);
-        
     }
 }
 
