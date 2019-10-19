@@ -92,15 +92,29 @@ namespace PasswordManager {
             //
             Console.WriteLine("Enter the path to the password database relative to the current working directory: ");
             string path = Console.ReadLine();
-            this.data = Data.Load(path);
+            Data loadedData;
+            
+            try {
+                loadedData = Data.Load(path);
+            } catch {
+                Console.WriteLine("\nFailed to load data.");
+                return;
+            }
+            
+            this.data = loadedData;
             this.passSet = false;
             this.changesMade = false;
         } // LoadData
         
         private void NewData () {
             //
-            Console.WriteLine("Enter the password you wish to set for this new database: ");
-            string passwd = Console.ReadLine();
+            string passwd = "";
+            
+            while (passwd == "") {
+                Console.WriteLine("Enter the password you wish to set for this new database: ");
+                passwd = Console.ReadLine();
+            }
+            
             this.data = new Data(passwd);
             this.passSet = true;
             this.changesMade = true;
@@ -114,28 +128,61 @@ namespace PasswordManager {
         
         private void AddMaster () {
             //
-            Console.WriteLine("Enter the master password for this database: ");
-            string passwd = Console.ReadLine();
-            this.data.SetPassword(passwd);
+            string passwd = "";
+            
+            while (passwd == "") {
+                Console.WriteLine("Enter the master password for this database: ");
+                passwd = Console.ReadLine();
+            }
+            
+            try {
+                this.data.SetPassword(passwd);
+            } catch (System.Security.Cryptography.CryptographicException) {
+                Console.WriteLine("Password Incorrect.");
+                return;
+            }
+            
             this.passSet = true;
         } // AddMaster
         
         private void AddEntry () {
             //
-            Console.WriteLine("Enter the name of the service for which this password is for: ");
-            string name = Console.ReadLine();
-            Console.WriteLine("Enter the password your wish to store for this service: ");
-            string passwd = Console.ReadLine();
-            this.changesMade = true;
+            string name = "";
+            string passwd = "";
             
+            while (name == "") {
+                Console.WriteLine("Enter the name of the service for which this password is for: ");
+                name = Console.ReadLine();
+            }
+            
+            while (passwd == "") {
+                Console.WriteLine("Enter the password your wish to store for this service: ");
+                passwd = Console.ReadLine();
+            }
+            
+            this.changesMade = true;
             this.data[name] = passwd;
         } // AddEntry
         
         private void SaveData () {
             //
-            Console.WriteLine("Enter the path (including filename) to which you wish to save the current database: ");
-            string path = Console.ReadLine();
-            this.data.Save(path);
+            string path = "";
+            
+            while (path == "") {
+                Console.WriteLine("Enter the path (including filename) to which you wish to save the current database: ");
+                path = Console.ReadLine();
+            }
+            
+            try {
+                this.data.Save(path);
+            } catch (System.UnauthorizedAccessException) {
+                Console.WriteLine("Unable to write to that location.");
+                return;
+            } catch (System.ArgumentException) {
+                Console.WriteLine("Unable to write to that location.");
+                return;
+            }
+            
             this.changesMade = false;
         }
         
@@ -146,9 +193,18 @@ namespace PasswordManager {
         
         private void Show () {
             //
-            Console.WriteLine("Enter the name of the service for which you wish to view the password: ");
-            string name = Console.ReadLine();
-            Console.WriteLine("Password is: {0}", this.data[name]);
+            string name = "";
+            
+            while (name == "") {
+                Console.WriteLine("Enter the name of the service for which you wish to view the password: ");
+                name = Console.ReadLine();
+            }
+            
+            try {
+                Console.WriteLine("Password is: {0}", this.data[name]);
+            } catch (System.Collections.Generic.KeyNotFoundException) {
+                Console.WriteLine("No password is stored for that service.");
+            }
         }
     
     

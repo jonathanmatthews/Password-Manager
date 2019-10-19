@@ -79,12 +79,12 @@ namespace PasswordManager {
                 if (testDecrypted == Data.test)
                     this.userPassword = userPassword;
                 else
-                    throw new Exception("AES password is incorrect.");
+                    throw new System.Security.Cryptography.CryptographicException("AES password is incorrect.");
             }
             
             catch (System.Security.Cryptography.CryptographicException) {
                 // If bad padding detected, password is probably wrong.
-                throw new Exception("AES password is incorrect.");   
+                throw new System.Security.Cryptography.CryptographicException("AES password is incorrect.");   
             }
         } // SetPassword
         
