@@ -9,8 +9,6 @@ like an interesting thing to implement, so I thought I'd give it a go.
 
 # Compiling
 I've tested it with Mono on Pop-OS, and so to compile it on a platform similar to mine
-using Mono, use something similar to: 
-`$ mcs Main.cs Data.cs Encryption.cs CLI.cs -out:passman.exe`
+using Mono, just run: 
+`$ make` 
 
-To run, simply use:
-`$ mono passman.exe`
